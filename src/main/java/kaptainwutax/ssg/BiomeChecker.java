@@ -27,7 +27,7 @@ public class BiomeChecker extends OverworldBiomeSource {
 		int upperZ = centerZ + STRONGHOLD_RADIUS >> 2;
 		int sizeX = upperX - lowerX + 1;
 		int sizeZ = upperZ - lowerZ + 1;
-		BPos blockPos = null;
+		CPos pos = null;
 		int p = 0;
 
 		for(int oz = 0; oz < sizeZ; ++oz) {
@@ -36,9 +36,9 @@ public class BiomeChecker extends OverworldBiomeSource {
 				int z = lowerZ + oz;
 
 				if(biomes.contains(this.getBiomeForNoiseGen(x, 0, z))) {
-					if(blockPos == null || rand.nextInt(p + 1) == 0) {
-						blockPos = new BPos(x << 2, 0, z << 2);
-						if(p == lastZero)return goodStarts.contains(blockPos.toChunkPos());
+					if(pos == null || rand.nextInt(p + 1) == 0) {
+						pos = new CPos(x >> 2, z >> 2);
+						if(p == lastZero)return goodStarts.contains(pos);
 					}
 
 					p++;
@@ -46,8 +46,8 @@ public class BiomeChecker extends OverworldBiomeSource {
 			}
 		}
 
-		if(blockPos == null)blockPos = new BPos(centerX, 0, centerZ);
-		return goodStarts.contains(blockPos.toChunkPos());
+		if(pos == null)pos = new CPos(centerX >> 4, centerZ >> 4);
+		return goodStarts.contains(pos);
 	}
 
 }
