@@ -34,7 +34,7 @@ public class WorldSeedGenerator {
 			Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
 			if(goodStarts.isEmpty())continue; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
 			System.out.println("Good one! " + goodStarts);
-			System.out.println("12 eye chunk " + _12eyeChunk.toBlockPos());
+
 			for(long upperBits = 0; upperBits < 1L << 16; upperBits++) {
 				long worldSeed = (upperBits << 48) | structureSeed;
 				BiomeChecker source = new BiomeChecker(version, worldSeed);
