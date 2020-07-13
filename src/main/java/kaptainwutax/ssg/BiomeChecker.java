@@ -8,7 +8,6 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
 import java.util.Collection;
-import java.util.Set;
 
 public class BiomeChecker extends OverworldBiomeSource {
 
@@ -46,7 +45,8 @@ public class BiomeChecker extends OverworldBiomeSource {
 			}
 		}
 
-		return blockPos != null && goodStarts.contains(blockPos.toChunkPos());
+		if(blockPos == null)blockPos = new BPos(centerX, 0, centerZ);
+		return goodStarts.contains(blockPos.toChunkPos());
 	}
 
 }
