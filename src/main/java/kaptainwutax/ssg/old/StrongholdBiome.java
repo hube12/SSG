@@ -41,7 +41,8 @@ public class StrongholdBiome {
 
 				rand.setSeed(rngSeed, false);
 
-				BPos moved = source.locateBiome(start.getX(), start.getZ(), 112, Stronghold.VALID_BIOMES, rand);
+				BPos moved = null;
+						//source.hasGoodStrongholdStart(start.getX(), start.getZ(), 112, Stronghold.VALID_BIOMES, rand);
 				CPos movedStart = moved == null ? start.toChunkPos() : moved.toChunkPos();
 
 				Boolean v = starts.get(movedStart);
