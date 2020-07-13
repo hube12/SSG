@@ -35,6 +35,16 @@ public class WorldSeedGenerator {
 			if(goodStarts.isEmpty())continue; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
 			System.out.println("Good one! " + goodStarts);
 
+			rand.setSeed(rngSeed, false);
+			int lastZero = 0;
+
+			for(int i = 1; i < 3249; i++) {
+				boolean b = rand.nextInt(i + 1) == 0;
+				if(b)lastZero = i;
+			}
+
+			System.out.println("Last zero " + lastZero + " / " + 3249);
+
 			for(long upperBits = 0; upperBits < 1L << 16; upperBits++) {
 				long worldSeed = (upperBits << 48) | structureSeed;
 				BiomeChecker source = new BiomeChecker(version, worldSeed);
@@ -42,7 +52,7 @@ public class WorldSeedGenerator {
 
 				if(!source.hasGoodStrongholdStart(
 						(startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8,
-						112, Stronghold.VALID_BIOMES, goodStarts, rand))continue;
+						Stronghold.VALID_BIOMES, goodStarts, rand, lastZero))continue;
 
 				System.out.println("World seed " + worldSeed);
 			}

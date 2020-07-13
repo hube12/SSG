@@ -11,22 +11,24 @@ import java.util.Collection;
 
 public class BiomeChecker extends OverworldBiomeSource {
 
+	public static final int STRONGHOLD_RADIUS = 112;
+
 	public BiomeChecker(MCVersion version, long worldSeed) {
 		super(version, worldSeed);
 	}
 
-	public boolean hasGoodStrongholdStart(int centerX, int centerZ, int radius, Collection<Biome> biomes,
-	                                      Collection<CPos> goodStarts, JRand rand) {
+	public boolean hasGoodStrongholdStart(int centerX, int centerZ, Collection<Biome> biomes,
+	                                      Collection<CPos> goodStarts, JRand rand, int lastZero) {
 		if(goodStarts.isEmpty())return false;
 
-		int lowerX = centerX - radius >> 2;
-		int lowerZ = centerZ - radius >> 2;
-		int upperX = centerX + radius >> 2;
-		int upperZ = centerZ + radius >> 2;
+		int lowerX = centerX - STRONGHOLD_RADIUS >> 2;
+		int lowerZ = centerZ - STRONGHOLD_RADIUS >> 2;
+		int upperX = centerX + STRONGHOLD_RADIUS >> 2;
+		int upperZ = centerZ + STRONGHOLD_RADIUS >> 2;
 		int sizeX = upperX - lowerX + 1;
 		int sizeZ = upperZ - lowerZ + 1;
 		BPos blockPos = null;
-		int p = 0, count = 0, total = sizeX * sizeZ;
+		int p = 0;
 
 		for(int oz = 0; oz < sizeZ; ++oz) {
 			for(int ox = 0; ox < sizeX; ++ox) {
@@ -36,12 +38,11 @@ public class BiomeChecker extends OverworldBiomeSource {
 				if(biomes.contains(this.getBiomeForNoiseGen(x, 0, z))) {
 					if(blockPos == null || rand.nextInt(p + 1) == 0) {
 						blockPos = new BPos(x << 2, 0, z << 2);
+						if(p == lastZero)return goodStarts.contains(blockPos.toChunkPos());
 					}
 
 					p++;
 				}
-
-				count++;
 			}
 		}
 
