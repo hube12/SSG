@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+dependencies {
+    implementation('com.github.KaptainWutax:SeedUtils:991e7b86896887ffa529ab4d9dde3c5c91371fac') {
+        transitive = false
+    }
+
+    implementation('com.github.KaptainWutax:LattiCG:1339155a2eff535c9dc89736f28c933689023f14') {
+        transitive = false
+    }
+
+    implementation('com.github.KaptainWutax:BiomeUtils:98e8cae22f23fae08bd2d9cd2121204ea4c99816') {
+        transitive = false
+    }
+
+    implementation('com.github.KaptainWutax:FeatureUtils:8237beca557657a9c884fc554093144248888093') {
+        transitive = false
+    }
+
+    implementation('com.github.mjtb49:ChunkRandomReversal:e66e286f4bcc5f652ba53f61482fc7dca8ef7d49') {
+        transitive = false
+    }
+}
