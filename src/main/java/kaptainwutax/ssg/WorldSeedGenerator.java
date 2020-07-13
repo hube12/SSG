@@ -31,18 +31,12 @@ public class WorldSeedGenerator {
 			long rngSeed = RING_SKIP.nextSeed(structureSeed ^ LCG.JAVA.multiplier);
 
 			System.out.println("Structure seed " + structureSeed);
+
 			Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
 			if(goodStarts.isEmpty())continue; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
+			int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
+
 			System.out.println("Good one! " + goodStarts);
-
-			rand.setSeed(rngSeed, false);
-			int lastZero = 0;
-
-			for(int i = 1; i < 3249; i++) {
-				boolean b = rand.nextInt(i + 1) == 0;
-				if(b)lastZero = i;
-			}
-
 			System.out.println("Last zero " + lastZero + " / " + 3249);
 
 			for(long upperBits = 0; upperBits < 1L << 16; upperBits++) {
@@ -79,6 +73,18 @@ public class WorldSeedGenerator {
 		}
 
 		return goodStarts;
+	}
+
+	public static int getLastZero(JRand rand, long rngSeed) {
+		rand.setSeed(rngSeed, false);
+		int lastZero = 0;
+
+		for(int i = 1; i < 3249; i++) {
+			boolean b = rand.nextInt(i + 1) == 0;
+			if(b)lastZero = i;
+		}
+
+		return lastZero;
 	}
 
 }
