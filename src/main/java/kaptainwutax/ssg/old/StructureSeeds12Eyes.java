@@ -1,9 +1,11 @@
-package kaptainwutax.ssg;
+package kaptainwutax.ssg.old;
 
 import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
+import kaptainwutax.ssg.EyeSeeds;
+import kaptainwutax.ssg.StrongholdGen;
 import mjtb49.hashreversals.ChunkRandomReverser;
 
 import java.io.*;

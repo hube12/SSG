@@ -1,4 +1,4 @@
-package kaptainwutax.ssg;
+package kaptainwutax.ssg.old;
 
 import kaptainwutax.featureutils.structure.Stronghold;
 import kaptainwutax.featureutils.structure.generator.StrongholdGenerator;
@@ -8,6 +8,7 @@ import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.ssg.BiomeChecker;
 
 import java.io.*;
 import java.util.HashMap;
