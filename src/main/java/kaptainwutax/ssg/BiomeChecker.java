@@ -17,10 +17,7 @@ public class BiomeChecker extends OverworldBiomeSource {
 		super(version, worldSeed);
 	}
 
-	public boolean hasGoodStrongholdStart(int centerX, int centerZ, Collection<Biome> biomes,
-	                                      Collection<CPos> goodStarts, JRand rand, int lastZero) {
-		if(goodStarts.isEmpty())return false;
-
+	public CPos getStrongholdStart(int centerX, int centerZ, Collection<Biome> biomes, JRand rand, int lastZero) {
 		int lowerX = centerX - STRONGHOLD_RADIUS >> 2;
 		int lowerZ = centerZ - STRONGHOLD_RADIUS >> 2;
 		int upperX = centerX + STRONGHOLD_RADIUS >> 2;
@@ -38,7 +35,7 @@ public class BiomeChecker extends OverworldBiomeSource {
 				if(biomes.contains(this.getBiomeForNoiseGen(x, 0, z))) {
 					if(pos == null || rand.nextInt(p + 1) == 0) {
 						pos = new CPos(x >> 2, z >> 2);
-						if(p == lastZero)return goodStarts.contains(pos);
+						if(p == lastZero)return pos;
 					}
 
 					p++;
@@ -46,8 +43,7 @@ public class BiomeChecker extends OverworldBiomeSource {
 			}
 		}
 
-		if(pos == null)pos = new CPos(centerX >> 4, centerZ >> 4);
-		return goodStarts.contains(pos);
+		return new CPos(centerX >> 4, centerZ >> 4);
 	}
 
 }

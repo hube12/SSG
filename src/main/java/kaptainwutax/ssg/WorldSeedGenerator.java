@@ -6,6 +6,7 @@ import kaptainwutax.featureutils.structure.generator.piece.stronghold.PortalRoom
 import kaptainwutax.seedutils.lcg.LCG;
 import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.util.BlockBox;
 
@@ -19,7 +20,7 @@ import java.util.regex.Pattern;
 public class WorldSeedGenerator {
 
 	private static final LCG RING_SKIP = LCG.JAVA.combine(4);
-
+//265094495598771
 	public static void generate(BufferedReader reader, BufferedWriter writer, MCVersion version) throws IOException {
 		JRand rand = new JRand(0L);
 
@@ -44,13 +45,26 @@ public class WorldSeedGenerator {
 				BiomeChecker source = new BiomeChecker(version, worldSeed);
 				rand.setSeed(rngSeed, false);
 
-				if(!source.hasGoodStrongholdStart(
-						(startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8,
-						Stronghold.VALID_BIOMES, goodStarts, rand, lastZero))continue;
+				CPos start = source.getStrongholdStart((startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8, Stronghold.VALID_BIOMES, rand, lastZero);
+				if(!goodStarts.contains(start))continue;
 
-				System.out.println("World seed " + worldSeed);
+				BPos p = getPortalCenter(structureSeed, start, version);
+				System.out.format("World seed %d /tp %d ~ %d\n", worldSeed, p.getX(), p.getZ());
 			}
 		}
+	}
+
+	private static BPos getPortalCenter(long structureSeed, CPos start, MCVersion version) {
+		StrongholdGenerator generator = new StrongholdGenerator(version);
+		final BlockBox[] portalBB = new BlockBox[1];
+
+		generator.generate(structureSeed, start.getX(), start.getZ(), piece -> {
+			if(!(piece instanceof PortalRoom))return true;
+			portalBB[0] = PortalFrame.getPortalBB((PortalRoom)piece);
+			return false;
+		});
+
+		return new BPos(portalBB[0].minX + 1, 0, portalBB[0].minZ + 1);
 	}
 
 	private static Collection<CPos> getGoodStarts(long structureSeed, CPos eyeChunk, CPos startChunk, MCVersion version) {
