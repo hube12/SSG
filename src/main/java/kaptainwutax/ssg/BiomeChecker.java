@@ -4,7 +4,6 @@ import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
 import java.util.Collection;
@@ -17,7 +16,7 @@ public class BiomeChecker extends OverworldBiomeSource {
 		super(version, worldSeed);
 	}
 
-	public CPos getStrongholdStart(int centerX, int centerZ, Collection<Biome> biomes, JRand rand, int lastZero) {
+	public CPos getStrongholdStart(int centerX, int centerZ, Collection<Biome> biomes, JRand rand, int lastZero, int lastX, int lastZ) {
 		int lowerX = centerX - STRONGHOLD_RADIUS >> 2;
 		int lowerZ = centerZ - STRONGHOLD_RADIUS >> 2;
 		int upperX = centerX + STRONGHOLD_RADIUS >> 2;
@@ -41,6 +40,8 @@ public class BiomeChecker extends OverworldBiomeSource {
 					p++;
 				}
 			}
+
+			if((lowerZ + oz) >> 2 > lastZ)return null;
 		}
 
 		return new CPos(centerX >> 4, centerZ >> 4);

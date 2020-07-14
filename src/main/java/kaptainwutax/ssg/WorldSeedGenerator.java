@@ -36,6 +36,8 @@ public class WorldSeedGenerator {
 			Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
 			if(goodStarts.isEmpty())continue; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
 			int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
+			int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
+			int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
 
 			System.out.println("Good one! " + goodStarts);
 			System.out.println("Last zero " + lastZero + " / " + 3249);
@@ -45,8 +47,10 @@ public class WorldSeedGenerator {
 				BiomeChecker source = new BiomeChecker(version, worldSeed);
 				rand.setSeed(rngSeed, false);
 
-				CPos start = source.getStrongholdStart((startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8, Stronghold.VALID_BIOMES, rand, lastZero);
-				if(!goodStarts.contains(start))continue;
+				CPos start = source.getStrongholdStart(
+						(startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8,
+						Stronghold.VALID_BIOMES, rand, lastZero, lastX, lastZ);
+				if(start == null || !goodStarts.contains(start))continue;
 
 				BPos p = getPortalCenter(structureSeed, start, version);
 				System.out.format("World seed %d /tp %d ~ %d\n", worldSeed, p.getX(), p.getZ());
@@ -77,9 +81,18 @@ public class WorldSeedGenerator {
 
 				generator.generate(structureSeed, testStart.getX(), testStart.getZ(), piece -> {
 					if(!(piece instanceof PortalRoom))return true;
+
+					BlockBox chunkBB = new BlockBox(eyeChunk.getX() << 4, 0, eyeChunk.getZ() << 4,
+							(eyeChunk.getX() << 4) + 15, 255, (eyeChunk.getZ() << 4) + 15);
+
 					BlockBox portalBB = PortalFrame.getPortalBB((PortalRoom)piece);
-					if(!portalBB.intersectsXZ(eyeChunk.getX() << 4, eyeChunk.getZ() << 4,
-							(eyeChunk.getX() << 4) + 15, (eyeChunk.getZ() << 4) + 15))return false;
+					if(!portalBB.intersects(chunkBB))return false;
+
+					for(Stronghold.Piece piece1: generator.pieceList) {
+						if(piece1 == piece)continue;
+						if(piece1.getBoundingBox().intersects(chunkBB))return false;
+					}
+
 					goodStarts.add(testStart);
 					return false;
 				});

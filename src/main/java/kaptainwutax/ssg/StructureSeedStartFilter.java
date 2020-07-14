@@ -4,7 +4,8 @@ import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.util.regex.Pattern;
 
 public class StructureSeedStartFilter {

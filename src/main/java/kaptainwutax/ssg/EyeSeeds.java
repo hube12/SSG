@@ -3,7 +3,6 @@ package kaptainwutax.ssg;
 import kaptainwutax.seedutils.lcg.LCG;
 import kaptainwutax.seedutils.lcg.rand.JRand;
 import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.seed.ChunkSeeds;
 import randomreverser.call.java.NextFloat;
 import randomreverser.device.Lattice;
 
