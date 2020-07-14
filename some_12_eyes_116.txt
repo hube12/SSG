@@ -1,7 +1,4 @@
-Structure seed 86515224140394
-Structure seed 195221998320287
-Good one! [Pos{x=81, y=0, z=-146}]
-Last zero 1993 / 3249
+Structure seed 195221998320287 ========================================
 World seed 60430867014400671 /tp 1246 ~ -2313
 World seed 77319365617040031 /tp 1246 ~ -2313
 World seed 155569409142602399 /tp 1246 ~ -2313
@@ -643,46 +640,7 @@ World seed -181356137980052833 /tp 1246 ~ -2313
 World seed -128438842358449505 /tp 1246 ~ -2313
 World seed -122527867847525729 /tp 1246 ~ -2313
 World seed -62855172784866657 /tp 1246 ~ -2313
-Structure seed 142721220058145
-Structure seed 258366710815118
-Good one! [Pos{x=77, y=0, z=-147}]
-Last zero 1180 / 3249
-Structure seed 121760907201641
-Structure seed 258650433634660
-Good one! [Pos{x=77, y=0, z=-145}, Pos{x=82, y=0, z=-145}]
-Last zero 408 / 3249
-Structure seed 249957320662905
-Structure seed 77672271890970
-Good one! [Pos{x=83, y=0, z=-144}]
-Last zero 1446 / 3249
-Structure seed 277192567289140
-Structure seed 172166431553422
-Structure seed 265094495598771
-Good one! [Pos{x=75, y=0, z=-142}]
-Last zero 449 / 3249
-Structure seed 268541212896191
-Structure seed 75570417436985
-Structure seed 110929986523603
-Good one! [Pos{x=73, y=0, z=-149}]
-Last zero 3088 / 3249
-Structure seed 131692048086214
-Good one! [Pos{x=75, y=0, z=-144}]
-Last zero 854 / 3249
-Structure seed 276778253647860
-Structure seed 67057573530750
-Structure seed 146916653543236
-Structure seed 151806749396033
-Structure seed 235804635599782
-Structure seed 33654051822140
-Good one! [Pos{x=73, y=0, z=-145}]
-Last zero 2382 / 3249
-Structure seed 220906714988175
-Good one! [Pos{x=73, y=0, z=-145}]
-Last zero 1828 / 3249
-Structure seed 20347411630534
-Structure seed 136191850689364
-Good one! [Pos{x=75, y=0, z=-144}, Pos{x=70, y=0, z=-143}]
-Last zero 145 / 3249
+Structure seed 136191850689364 ========================================
 World seed 145940229786809172 /tp 1154 ~ -2305
 World seed 185346726526301012 /tp 1154 ~ -2305
 World seed 354794662506115924 /tp 1154 ~ -2305
@@ -797,27 +755,7 @@ World seed -571258010871942316 /tp 1154 ~ -2305
 World seed -506237291251780780 /tp 1154 ~ -2305
 World seed -478934218510847148 /tp 1154 ~ -2305
 World seed -348329829317102764 /tp 1154 ~ -2305
-Structure seed 137366645885219
-Structure seed 224298611822776
-Structure seed 268385730710095
-Good one! [Pos{x=63, y=0, z=-145}]
-Last zero 998 / 3249
-Structure seed 109009930382639
-Good one! [Pos{x=68, y=0, z=-146}]
-Last zero 2017 / 3249
-Structure seed 184461697412160
-Good one! [Pos{x=62, y=0, z=-145}]
-Last zero 267 / 3249
-Structure seed 35749353265981
-Good one! [Pos{x=64, y=0, z=-148}]
-Last zero 3184 / 3249
-Structure seed 166883303038660
-Good one! [Pos{x=65, y=0, z=-146}]
-Last zero 1573 / 3249
-Structure seed 183157782590062
-Structure seed 141854320771950
-Good one! [Pos{x=67, y=0, z=-144}]
-Last zero 1173 / 3249
+Structure seed 141854320771950 ========================================
 World seed 108228245377663854 /tp 1085 ~ -2307
 World seed 430235618734654318 /tp 1085 ~ -2307
 World seed 431080043664786286 /tp 1085 ~ -2307
@@ -873,28 +811,7 @@ World seed -676805464668355730 /tp 1085 ~ -2307
 World seed -551830575008824466 /tp 1085 ~ -2307
 World seed -292873596435020946 /tp 1085 ~ -2307
 World seed -194920304539712658 /tp 1085 ~ -2307
-Structure seed 98705757810099
-Structure seed 122996233553919
-Good one! [Pos{x=62, y=0, z=-144}]
-Last zero 2590 / 3249
-Structure seed 87401383519514
-Good one! [Pos{x=64, y=0, z=-144}]
-Last zero 147 / 3249
-Structure seed 152440980290836
-Good one! [Pos{x=61, y=0, z=-141}]
-Last zero 3195 / 3249
-Structure seed 216372011247340
-Structure seed 125666214605768
-Structure seed 48912603275415
-Structure seed 87933410337280
-Good one! [Pos{x=-173, y=0, z=41}]
-Last zero 922 / 3249
-Structure seed 14795271611053
-Good one! [Pos{x=66, y=0, z=-145}]
-Last zero 1711 / 3249
-Structure seed 180791805204338
-Good one! [Pos{x=61, y=0, z=-147}, Pos{x=65, y=0, z=-140}]
-Last zero 1105 / 3249
+Structure seed 180791805204338 ========================================
 World seed 287003793073362802 /tp 1017 ~ -2320
 World seed 1056837854377006962 /tp 1017 ~ -2320
 World seed 1336342506250688370 /tp 1017 ~ -2320
@@ -935,12 +852,7 @@ World seed -1033395322676324494 /tp 1017 ~ -2320
 World seed -942478905198782606 /tp 1017 ~ -2320
 World seed -718987773690521742 /tp 1017 ~ -2320
 World seed -292271708997167246 /tp 1017 ~ -2320
-Structure seed 221637805168775
-Good one! [Pos{x=59, y=0, z=-145}, Pos{x=63, y=0, z=-141}]
-Last zero 2622 / 3249
-Structure seed 124279089110340
-Good one! [Pos{x=64, y=0, z=-141}]
-Last zero 1779 / 3249
+Structure seed 124279089110340 ========================================
 World seed 15323927831485764 /tp 1020 ~ -2313
 World seed 153528141396417860 /tp 1020 ~ -2313
 World seed 211511986598812996 /tp 1020 ~ -2313
@@ -1577,51 +1489,3 @@ World seed -96984587876065980 /tp 1020 ~ -2313
 World seed -80659039226847932 /tp 1020 ~ -2313
 World seed -65177915507761852 /tp 1020 ~ -2313
 World seed -60955790857102012 /tp 1020 ~ -2313
-Structure seed 209405444145710
-Good one! [Pos{x=55, y=0, z=-144}]
-Last zero 2379 / 3249
-Structure seed 954513489516
-Good one! [Pos{x=60, y=0, z=-144}, Pos{x=61, y=0, z=-142}]
-Last zero 1495 / 3249
-Structure seed 137296816025240
-Structure seed 102269636924746
-Good one! [Pos{x=55, y=0, z=-144}]
-Last zero 1440 / 3249
-Structure seed 23261540708066
-Structure seed 22168288284927
-Good one! [Pos{x=61, y=0, z=-146}, Pos{x=60, y=0, z=-146}]
-Last zero 1825 / 3249
-Structure seed 96557715348848
-Structure seed 207577228802519
-Structure seed 200576262194354
-Structure seed 91628973479482
-Good one! [Pos{x=61, y=0, z=-142}]
-Last zero 2578 / 3249
-Structure seed 274298647901903
-Good one! [Pos{x=60, y=0, z=-147}]
-Last zero 552 / 3249
-Structure seed 267426572747493
-Structure seed 43691057663604
-Good one! [Pos{x=-172, y=0, z=43}]
-Last zero 685 / 3249
-Structure seed 163449122215009
-Structure seed 240432689658590
-Structure seed 182592665982450
-Good one! [Pos{x=58, y=0, z=-148}]
-Last zero 615 / 3249
-Structure seed 82799381190734
-Structure seed 193515681304448
-Good one! [Pos{x=53, y=0, z=-147}]
-Last zero 1671 / 3249
-Structure seed 254705355541206
-Structure seed 18929529769405
-Structure seed 114958224194671
-Good one! [Pos{x=56, y=0, z=-146}]
-Last zero 3248 / 3249
-Structure seed 181799607500635
-Good one! [Pos{x=-165, y=0, z=46}]
-Last zero 1459 / 3249
-Structure seed 271591742631537
-Structure seed 71710528420900
-Good one! [Pos{x=55, y=0, z=-148}]
-Last zero 2837 / 3249
