@@ -15,32 +15,40 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 public class WorldSeedGenerator {
 
+	private static final boolean DEBUG = false;
 	private static final LCG RING_SKIP = LCG.JAVA.combine(4);
-//265094495598771
+
 	public static void generate(BufferedReader reader, BufferedWriter writer, MCVersion version) throws IOException {
 		JRand rand = new JRand(0L);
+		AtomicInteger progress = new AtomicInteger();
+		long startTime = System.nanoTime();
 
-		while(reader.ready()) {
-			String[] line = reader.readLine().split(Pattern.quote(" "));
+		reader.lines().parallel().forEach(s -> {
+			String[] line = s.trim().split(Pattern.quote(" "));
 			long structureSeed = Long.parseLong(line[0]);
 			CPos _12eyeChunk = new CPos(Integer.parseInt(line[1]), Integer.parseInt(line[2]));
 			CPos startChunk = new CPos(Integer.parseInt(line[3]), Integer.parseInt(line[4]));
 			long rngSeed = RING_SKIP.nextSeed(structureSeed ^ LCG.JAVA.multiplier);
 
-			System.out.println("Structure seed " + structureSeed);
+			if(DEBUG) {
+				System.out.println("Structure seed " + structureSeed);
+			}
 
 			Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
-			if(goodStarts.isEmpty())continue; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
+			if(goodStarts.isEmpty())return; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
 			int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
 			int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
 			int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
 
-			System.out.println("Good one! " + goodStarts);
-			System.out.println("Last zero " + lastZero + " / " + 3249);
+			if(DEBUG) {
+				System.out.println("Good one! " + goodStarts);
+				System.out.println("Last zero " + lastZero + " / " + 3249);
+			}
 
 			for(long upperBits = 0; upperBits < 1L << 16; upperBits++) {
 				long worldSeed = (upperBits << 48) | structureSeed;
@@ -55,7 +63,9 @@ public class WorldSeedGenerator {
 				BPos p = getPortalCenter(structureSeed, start, version);
 				System.out.format("World seed %d /tp %d ~ %d\n", worldSeed, p.getX(), p.getZ());
 			}
-		}
+
+			onStructureSeedCompletion(startTime, progress);
+		});
 	}
 
 	private static BPos getPortalCenter(long structureSeed, CPos start, MCVersion version) {
@@ -112,6 +122,16 @@ public class WorldSeedGenerator {
 		}
 
 		return lastZero;
+	}
+
+	public static void onStructureSeedCompletion(long startTime, AtomicInteger progress) {
+		int i = progress.incrementAndGet();
+		int total = 250389; //Maybe don't hardcode the line count... xD
+
+		double seconds = (double)(System.nanoTime() - startTime) / 1000000000.0D;
+		double speed = (double)i / seconds;
+		double eta = (double)(total - i) / speed;
+		System.err.format("Finished %d seeds out of %d in %fs. ETA %fs.\n", i, total, (float)seconds, (float)eta);
 	}
 
 }
