@@ -7,7 +7,7 @@ public class WorldSeedsTest {
 
 	public static void main(String[] args) throws IOException {
 		WorldSeedGenerator.generate(
-				new BufferedReader(new FileReader(new File("output2_16.txt"))),
+				new BufferedReader(new FileReader(new File("input12eyes.txt"))),
 				new BufferedWriter(new FileWriter(new File("output3_16.txt"))),
 				MCVersion.v1_16
 		);

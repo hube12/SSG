@@ -11,165 +11,214 @@ import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.util.BlockBox;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class WorldSeedGenerator implements Runnable {
-	private final ArrayList<String> eyes;
-	private final int pos;
-	private final MCVersion version;
-	public WorldSeedGenerator(ArrayList<String> eyes,int pos, MCVersion version){
-		this.eyes=eyes;
-		this.pos=pos;
-		this.version=version;
-	}
+    private final ArrayList<String> eyes;
+    private final int threadId;
+    private final MCVersion version;
+    private final int workId;
 
-	public static void main(String[] args) {
-		List<String>  eyes=null;
-		try {
-			URI path = Objects.requireNonNull(WorldSeedGenerator.class.getClassLoader().getResource( "output2_16.txt")).toURI();
-			eyes = Files.lines(Paths.get(path)).collect(Collectors.toList());
-		} catch (IOException | URISyntaxException e) {
-			e.printStackTrace();
-		}
-		assert eyes != null;
-	    int numberThreads=96;
+    public WorldSeedGenerator(ArrayList<String> eyes, int threadId, MCVersion version, int workId) {
+        this.eyes = eyes;
+        this.threadId = threadId;
+        this.version = version;
+        this.workId = workId;
+    }
 
-		long len=eyes.size();
-		long strides=len/numberThreads;
-		for (int i = 0; i <numberThreads ; i++) {
-			ArrayList<String> eye_stride=new ArrayList<>();
-			for (long j = strides*i; j < strides*(i+1); j++) {
-				eye_stride.add(eyes.get((int) j));
-			}
-			Thread thread = new Thread(new WorldSeedGenerator(eye_stride,i,MCVersion.v1_16));
-			thread.start();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        if (args.length < 2) {
+            System.out.println("usage is *.jar <numberThreads> <workunit>");
+            return;
+        }
+        int numberThreads = Integer.parseInt(args[0]);
+        int workId = Integer.parseInt(args[1]);
+        InputStream in = WorldSeedGenerator.class.getResourceAsStream("/input12eyes.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        List<String> eyes = reader.lines().collect(Collectors.toList());
+        long len = eyes.size() / 1024 * workId;
+        long strides = len / numberThreads;
+        ArrayList<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < numberThreads; i++) {
+            ArrayList<String> eye_stride = new ArrayList<>();
+            for (long j = strides * i; j < strides * (i + 1); j++) {
+                eye_stride.add(eyes.get((int) j));
+            }
+            Thread thread = new Thread(new WorldSeedGenerator(eye_stride, i, MCVersion.v1_16, workId));
+            thread.start();
+            threads.add(thread);
+        }
+        for (Thread thread : threads) {
+            thread.join();
+        }
+        File file = new File("finalOutput_" + workId + ".txt");
 
-		}
-	}
-	private static final boolean DEBUG = false;
-	private static final LCG RING_SKIP = LCG.JAVA.combine(4);
 
-	public void generate() {
-		JRand rand = new JRand(0L);
-		AtomicInteger progress = new AtomicInteger();
-		long startTime = System.nanoTime();
-		eyes.forEach(s -> {
-			String[] line = s.trim().split(Pattern.quote(" "));
-			long structureSeed = Long.parseLong(line[0]);
-			CPos _12eyeChunk = new CPos(Integer.parseInt(line[1]), Integer.parseInt(line[2]));
-			CPos startChunk = new CPos(Integer.parseInt(line[3]), Integer.parseInt(line[4]));
-			long rngSeed = RING_SKIP.nextSeed(structureSeed ^ LCG.JAVA.multiplier);
+        FileWriter fileWriter = new FileWriter(file);
+        for (int i = 0; i < numberThreads; i++) {
+            BufferedReader readerOut = new BufferedReader(new FileReader("output_" + workId + "_" + i + ".txt"));
+            readerOut.lines().forEach(s -> {
+                try {
+                    fileWriter.write(s);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            fileWriter.flush();
+        }
+        fileWriter.close();
+    }
 
-			if(DEBUG) {
-				System.out.println("Structure seed " + structureSeed);
-			}
+    private static final boolean DEBUG = false;
+    private static final LCG RING_SKIP = LCG.JAVA.combine(4);
 
-			Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
-			if(goodStarts.isEmpty())return; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
-			int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
-			int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
-			int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
+    public void generate() throws IOException {
+        File file = new File("output_" + workId + "_" + threadId + ".txt");
+        if (!file.exists()) {
 
-			if(DEBUG) {
-				System.out.println("Good one! " + goodStarts);
-				System.out.println("Last zero " + lastZero + " / " + 3249);
-			}
+            if (!file.createNewFile()) {
+                System.out.println("File was not created");
+                System.exit(-1);
+            }
+        }
+        System.out.println(file.getAbsolutePath());
+        FileWriter fileWriter = new FileWriter(file);
+        JRand rand = new JRand(0L);
+        AtomicInteger progress = new AtomicInteger();
+        long startTime = System.nanoTime();
+        eyes.forEach(s -> {
+            System.out.println(s);
+            String[] line = s.trim().split(Pattern.quote(" "));
+            long structureSeed = Long.parseLong(line[0]);
+            CPos _12eyeChunk = new CPos(Integer.parseInt(line[1]), Integer.parseInt(line[2]));
+            CPos startChunk = new CPos(Integer.parseInt(line[3]), Integer.parseInt(line[4]));
+            long rngSeed = RING_SKIP.nextSeed(structureSeed ^ LCG.JAVA.multiplier);
 
-			for(long upperBits = 0; upperBits < 1L << 16; upperBits++) {
-				long worldSeed = (upperBits << 48) | structureSeed;
-				BiomeChecker source = new BiomeChecker(version, worldSeed);
-				rand.setSeed(rngSeed, false);
+            if (DEBUG) {
+                System.out.println("Structure seed " + structureSeed);
+            }
 
-				CPos start = source.getStrongholdStart(
-						(startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8,
-						Stronghold.VALID_BIOMES, rand, lastZero, lastX, lastZ);
-				if(start == null || !goodStarts.contains(start))continue;
+            Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
+            if (goodStarts.isEmpty()) return; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
+            int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
+            int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
+            int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
 
-				BPos p = getPortalCenter(structureSeed, start, version);
-				System.out.format("World seed %d /tp %d ~ %d\n", worldSeed, p.getX(), p.getZ());
-			}
+            if (DEBUG) {
+                System.out.println("Good one! " + goodStarts);
+                System.out.println("Last zero " + lastZero + " / " + 3249);
+            }
 
-			onStructureSeedCompletion(startTime, progress);
-		});
-	}
+            for (long upperBits = 0; upperBits < 1L << 16; upperBits++) {
+                long worldSeed = (upperBits << 48) | structureSeed;
+                BiomeChecker source = new BiomeChecker(version, worldSeed);
+                rand.setSeed(rngSeed, false);
 
-	private static BPos getPortalCenter(long structureSeed, CPos start, MCVersion version) {
-		StrongholdGenerator generator = new StrongholdGenerator(version);
-		final BlockBox[] portalBB = new BlockBox[1];
+                CPos start = source.getStrongholdStart(
+                        (startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8,
+                        Stronghold.VALID_BIOMES, rand, lastZero, lastX, lastZ);
+                if (start == null || !goodStarts.contains(start)) continue;
 
-		generator.generate(structureSeed, start.getX(), start.getZ(), piece -> {
-			if(!(piece instanceof PortalRoom))return true;
-			portalBB[0] = PortalFrame.getPortalBB((PortalRoom)piece);
-			return false;
-		});
+                BPos p = getPortalCenter(structureSeed, start, version);
+                String msg = String.format("World seed %d /tp %d ~ %d\n", worldSeed, p.getX(), p.getZ());
+                System.out.print(msg);
+                try {
+                    fileWriter.write(msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
+            }
+            try {
+                fileWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(-1);
+            }
+            onStructureSeedCompletion(startTime, progress);
+        });
+        fileWriter.close();
+    }
 
-		return new BPos(portalBB[0].minX + 1, 0, portalBB[0].minZ + 1);
-	}
+    private static BPos getPortalCenter(long structureSeed, CPos start, MCVersion version) {
+        StrongholdGenerator generator = new StrongholdGenerator(version);
+        final BlockBox[] portalBB = new BlockBox[1];
 
-	private static Collection<CPos> getGoodStarts(long structureSeed, CPos eyeChunk, CPos startChunk, MCVersion version) {
-		Collection<CPos> goodStarts = new HashSet<>();
+        generator.generate(structureSeed, start.getX(), start.getZ(), piece -> {
+            if (!(piece instanceof PortalRoom)) return true;
+            portalBB[0] = PortalFrame.getPortalBB((PortalRoom) piece);
+            return false;
+        });
 
-		for(int ox = -13; ox <= 13; ox++) {
-			for(int oz = -13; oz <= 13; oz++) {
-				StrongholdGenerator generator = new StrongholdGenerator(version);
-				CPos testStart = new CPos(startChunk.getX() + ox, startChunk.getZ() + oz);
+        return new BPos(portalBB[0].minX + 1, 0, portalBB[0].minZ + 1);
+    }
 
-				generator.generate(structureSeed, testStart.getX(), testStart.getZ(), piece -> {
-					if(!(piece instanceof PortalRoom))return true;
+    private static Collection<CPos> getGoodStarts(long structureSeed, CPos eyeChunk, CPos startChunk, MCVersion version) {
+        Collection<CPos> goodStarts = new HashSet<>();
 
-					BlockBox chunkBB = new BlockBox(eyeChunk.getX() << 4, 0, eyeChunk.getZ() << 4,
-							(eyeChunk.getX() << 4) + 15, 255, (eyeChunk.getZ() << 4) + 15);
+        for (int ox = -13; ox <= 13; ox++) {
+            for (int oz = -13; oz <= 13; oz++) {
+                StrongholdGenerator generator = new StrongholdGenerator(version);
+                CPos testStart = new CPos(startChunk.getX() + ox, startChunk.getZ() + oz);
 
-					BlockBox portalBB = PortalFrame.getPortalBB((PortalRoom)piece);
-					if(!portalBB.intersects(chunkBB))return false;
+                generator.generate(structureSeed, testStart.getX(), testStart.getZ(), piece -> {
+                    if (!(piece instanceof PortalRoom)) return true;
 
-					for(Stronghold.Piece piece1: generator.pieceList) {
-						if(piece1 == piece)continue;
-						if(piece1.getBoundingBox().intersects(chunkBB))return false;
-					}
+                    BlockBox chunkBB = new BlockBox(eyeChunk.getX() << 4, 0, eyeChunk.getZ() << 4,
+                            (eyeChunk.getX() << 4) + 15, 255, (eyeChunk.getZ() << 4) + 15);
 
-					goodStarts.add(testStart);
-					return false;
-				});
-			}
-		}
+                    BlockBox portalBB = PortalFrame.getPortalBB((PortalRoom) piece);
+                    if (!portalBB.intersects(chunkBB)) return false;
 
-		return goodStarts;
-	}
+                    for (Stronghold.Piece piece1 : generator.pieceList) {
+                        if (piece1 == piece) continue;
+                        if (piece1.getBoundingBox().intersects(chunkBB)) return false;
+                    }
 
-	public static int getLastZero(JRand rand, long rngSeed) {
-		rand.setSeed(rngSeed, false);
-		int lastZero = 0;
+                    goodStarts.add(testStart);
+                    return false;
+                });
+            }
+        }
 
-		for(int i = 1; i < 3249; i++) {
-			boolean b = rand.nextInt(i + 1) == 0;
-			if(b)lastZero = i;
-		}
+        return goodStarts;
+    }
 
-		return lastZero;
-	}
+    public static int getLastZero(JRand rand, long rngSeed) {
+        rand.setSeed(rngSeed, false);
+        int lastZero = 0;
 
-	public static void onStructureSeedCompletion(long startTime, AtomicInteger progress) {
-		int i = progress.incrementAndGet();
-		int total = 250389; //Maybe don't hardcode the line count... xD
+        for (int i = 1; i < 3249; i++) {
+            boolean b = rand.nextInt(i + 1) == 0;
+            if (b) lastZero = i;
+        }
 
-		double seconds = (double)(System.nanoTime() - startTime) / 1000000000.0D;
-		double speed = (double)i / seconds;
-		double eta = (double)(total - i) / speed;
-		System.err.format("Finished %d seeds out of %d in %fs. ETA %fs.\n", i, total, (float)seconds, (float)eta);
-	}
+        return lastZero;
+    }
 
-	@Override
-	public void run() {
-		long id = Thread.currentThread().getId();
-		System.out.println(id+" is starting");
-		generate();
-	}
+    public void onStructureSeedCompletion(long startTime, AtomicInteger progress) {
+        int i = progress.incrementAndGet();
+        int total = eyes.size(); //Maybe don't hardcode the line count... xD
+
+        double seconds = (double) (System.nanoTime() - startTime) / 1000000000.0D;
+        double speed = (double) i / seconds;
+        double eta = (double) (total - i) / speed;
+        System.err.format("Finished %d seeds out of %d in %fs. ETA %fs.\n", i, total, (float) seconds, (float) eta);
+    }
+
+    @Override
+    public void run() {
+        long id = Thread.currentThread().getId();
+        System.out.println("Thread id:" + id + " is starting for task: " + threadId+" with payload of size "+eyes.size());
+        try {
+            generate();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-2);
+        }
+        System.out.println("END " + workId);
+    }
 }
