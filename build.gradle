@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 sourceCompatibility = 1.8
@@ -14,22 +15,35 @@ repositories {
 
 dependencies {
     implementation('com.github.KaptainWutax:SeedUtils:9135a229eed6174f9b65e8b1fd0b0a8d1aefdef0') {
-        transitive = false
+        
     }
 
     implementation('com.github.KaptainWutax:LattiCG:1339155a2eff535c9dc89736f28c933689023f14') {
-        transitive = false
+
     }
 
     implementation('com.github.KaptainWutax:BiomeUtils:94098e9d2bd8bc4f1134d4b79dfa82d70ef90979') {
-        transitive = false
+
     }
 
     implementation('com.github.KaptainWutax:FeatureUtils:67098281211343ed9a0c5216e021c63db54f3ba2') {
-        transitive = false
+
     }
 
     implementation('com.github.mjtb49:ChunkRandomReversal:e66e286f4bcc5f652ba53f61482fc7dca8ef7d49') {
-        transitive = false
+
     }
+}
+
+application {
+    mainClassName = "kaptainwutax.ssg.Main"
+}
+
+task customFatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'kaptainwutax.ssg.Main'
+    }
+    baseName = 'SSG'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
