@@ -123,7 +123,7 @@ public class WorldSeedGenerator implements Runnable {
                 if (start == null || !goodStarts.contains(start)) continue;
 
                 BPos p = getPortalCenter(structureSeed, start, version);
-                String msg = String.format("World seed %d /tp %d ~ %d\n", worldSeed, p.getX(), p.getZ());
+                String msg = String.format("%d:World seed %d /tp %d ~ %d\n",threadId, worldSeed, p.getX(), p.getZ());
                 System.out.print(msg);
                 try {
                     fileWriter.write(msg);
@@ -167,8 +167,7 @@ public class WorldSeedGenerator implements Runnable {
                 generator.generate(structureSeed, testStart.getX(), testStart.getZ(), piece -> {
                     if (!(piece instanceof PortalRoom)) return true;
 
-                    BlockBox chunkBB = new BlockBox(eyeChunk.getX() << 4, 0, eyeChunk.getZ() << 4,
-                            (eyeChunk.getX() << 4) + 15, 255, (eyeChunk.getZ() << 4) + 15);
+                    BlockBox chunkBB = new BlockBox(eyeChunk.getX() << 4, 0, eyeChunk.getZ() << 4, (eyeChunk.getX() << 4) + 15, 255, (eyeChunk.getZ() << 4) + 15);
 
                     BlockBox portalBB = PortalFrame.getPortalBB((PortalRoom) piece);
                     if (!portalBB.intersects(chunkBB)) return false;
@@ -217,6 +216,7 @@ public class WorldSeedGenerator implements Runnable {
             generate();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("HUGE ERROR");
             System.exit(-2);
         }
         System.out.println("END " + workId);
