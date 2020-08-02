@@ -10,25 +10,57 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.util.BlockBox;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-public class WorldSeedGenerator {
+public class WorldSeedGenerator implements Runnable {
+	private final ArrayList<String> eyes;
+	private final int pos;
+	private final MCVersion version;
+	public WorldSeedGenerator(ArrayList<String> eyes,int pos, MCVersion version){
+		this.eyes=eyes;
+		this.pos=pos;
+		this.version=version;
+	}
 
+	public static void main(String[] args) {
+		List<String>  eyes=null;
+		try {
+			URI path = Objects.requireNonNull(WorldSeedGenerator.class.getClassLoader().getResource( "output2_16.txt")).toURI();
+			eyes = Files.lines(Paths.get(path)).collect(Collectors.toList());
+		} catch (IOException | URISyntaxException e) {
+			e.printStackTrace();
+		}
+		assert eyes != null;
+	    int numberThreads=96;
+
+		long len=eyes.size();
+		long strides=len/numberThreads;
+		for (int i = 0; i <numberThreads ; i++) {
+			ArrayList<String> eye_stride=new ArrayList<>();
+			for (long j = strides*i; j < strides*(i+1); j++) {
+				eye_stride.add(eyes.get((int) j));
+			}
+			Thread thread = new Thread(new WorldSeedGenerator(eye_stride,i,MCVersion.v1_16));
+			thread.start();
+
+		}
+	}
 	private static final boolean DEBUG = false;
 	private static final LCG RING_SKIP = LCG.JAVA.combine(4);
 
-	public static void generate(BufferedReader reader, BufferedWriter writer, MCVersion version) throws IOException {
+	public void generate() {
 		JRand rand = new JRand(0L);
 		AtomicInteger progress = new AtomicInteger();
 		long startTime = System.nanoTime();
-
-		reader.lines().parallel().forEach(s -> {
+		eyes.forEach(s -> {
 			String[] line = s.trim().split(Pattern.quote(" "));
 			long structureSeed = Long.parseLong(line[0]);
 			CPos _12eyeChunk = new CPos(Integer.parseInt(line[1]), Integer.parseInt(line[2]));
@@ -134,4 +166,10 @@ public class WorldSeedGenerator {
 		System.err.format("Finished %d seeds out of %d in %fs. ETA %fs.\n", i, total, (float)seconds, (float)eta);
 	}
 
+	@Override
+	public void run() {
+		long id = Thread.currentThread().getId();
+		System.out.println(id+" is starting");
+		generate();
+	}
 }

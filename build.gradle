@@ -36,7 +36,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "kaptainwutax.ssg.Main"
+    mainClassName = "kaptainwutax.ssg.WorldSeedGenerator"
 }
 
 task customFatJar(type: Jar) {
