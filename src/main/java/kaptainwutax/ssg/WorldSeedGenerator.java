@@ -72,8 +72,8 @@ public class WorldSeedGenerator implements Runnable {
         fileWriter.close();
     }
 
-    private static final boolean DEBUG = false;
-    private static final LCG RING_SKIP = LCG.JAVA.combine(4);
+    private final boolean DEBUG = false;
+    private final LCG RING_SKIP = LCG.JAVA.combine(4);
 
     public void generate() throws IOException {
         File file = new File("output_" + workId + "_" + threadId + ".txt");
@@ -205,7 +205,7 @@ public class WorldSeedGenerator implements Runnable {
         double seconds = (double) (System.nanoTime() - startTime) / 1000000000.0D;
         double speed = (double) i / seconds;
         double eta = (double) (total - i) / speed;
-        System.err.format("Finished %d seeds out of %d in %fs. ETA %fs.\n", i, total, (float) seconds, (float) eta);
+        System.out.printf("Finished %d seeds out of %d in %fs. ETA %fs.\n", i, total, (float) seconds, (float) eta);
     }
 
     @Override
