@@ -40,9 +40,9 @@ public class WorldSeedGenerator implements Runnable {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<String> eyes = reader.lines().collect(Collectors.toList());
         int size=eyes.size();
-        int len = size / 1024;
+        int len = size / 4;
         int strides = len / numberThreads;
-        for (int id = 0; id < args.length-1; id++) {
+        for (int id = 1; id < args.length; id++) {
             int workId = Integer.parseInt(args[id]);
             ArrayList<Thread> threads = new ArrayList<>();
             for (int i = 0; i < numberThreads; i++) {
