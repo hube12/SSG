@@ -31,46 +31,50 @@ public class WorldSeedGenerator implements Runnable {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length < 2) {
-            System.out.println("usage is *.jar <numberThreads> <workunit>");
+            System.out.println("usage is *.jar <numberThreads> <workunit>*");
             return;
         }
         int numberThreads = Integer.parseInt(args[0]);
-        int workId = Integer.parseInt(args[1]);
+
         InputStream in = WorldSeedGenerator.class.getResourceAsStream("/input12eyes.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<String> eyes = reader.lines().collect(Collectors.toList());
         int size=eyes.size();
         int len = size / 1024;
         int strides = len / numberThreads;
-        ArrayList<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < numberThreads; i++) {
-            ArrayList<String> eye_stride = new ArrayList<>();
-            for (int j = strides * i; j < strides * (i + 1); j++) {
-                eye_stride.add(eyes.get(j+size/1024*workId));
-            }
-            Thread thread = new Thread(new WorldSeedGenerator(eye_stride, i, MCVersion.v1_16, workId));
-            thread.start();
-            threads.add(thread);
-        }
-        for (Thread thread : threads) {
-            thread.join();
-        }
-        File file = new File("finalOutput_" + workId + ".txt");
-
-
-        FileWriter fileWriter = new FileWriter(file);
-        for (int i = 0; i < numberThreads; i++) {
-            BufferedReader readerOut = new BufferedReader(new FileReader("output_" + workId + "_" + i + ".txt"));
-            readerOut.lines().forEach(s -> {
-                try {
-                    fileWriter.write(s);
-                } catch (IOException e) {
-                    e.printStackTrace();
+        for (int id = 0; id < args.length-1; id++) {
+            int workId = Integer.parseInt(args[id]);
+            ArrayList<Thread> threads = new ArrayList<>();
+            for (int i = 0; i < numberThreads; i++) {
+                ArrayList<String> eye_stride = new ArrayList<>();
+                for (int j = strides * i; j < strides * (i + 1); j++) {
+                    eye_stride.add(eyes.get(j+size/1024*workId));
                 }
-            });
-            fileWriter.flush();
+                Thread thread = new Thread(new WorldSeedGenerator(eye_stride, i, MCVersion.v1_16, workId));
+                thread.start();
+                threads.add(thread);
+            }
+            for (Thread thread : threads) {
+                thread.join();
+            }
+            File file = new File("finalOutput_" + workId + ".txt");
+
+
+            FileWriter fileWriter = new FileWriter(file);
+            for (int i = 0; i < numberThreads; i++) {
+                BufferedReader readerOut = new BufferedReader(new FileReader("output_" + workId + "_" + i + ".txt"));
+                readerOut.lines().forEach(s -> {
+                    try {
+                        fileWriter.write(s);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                fileWriter.flush();
+            }
+            fileWriter.close();
         }
-        fileWriter.close();
+
     }
 
     private final boolean DEBUG = false;
