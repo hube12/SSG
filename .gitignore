@@ -4,3 +4,7 @@ build/
 SSG.jar
 
 output3_16.txt
+
+out/
+
+output*.txt

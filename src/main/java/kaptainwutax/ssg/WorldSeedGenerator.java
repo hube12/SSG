@@ -39,13 +39,14 @@ public class WorldSeedGenerator implements Runnable {
         InputStream in = WorldSeedGenerator.class.getResourceAsStream("/input12eyes.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<String> eyes = reader.lines().collect(Collectors.toList());
-        long len = eyes.size() / 1024 * workId;
-        long strides = len / numberThreads;
+        int size=eyes.size();
+        int len = size / 1024;
+        int strides = len / numberThreads;
         ArrayList<Thread> threads = new ArrayList<>();
         for (int i = 0; i < numberThreads; i++) {
             ArrayList<String> eye_stride = new ArrayList<>();
-            for (long j = strides * i; j < strides * (i + 1); j++) {
-                eye_stride.add(eyes.get((int) j));
+            for (int j = strides * i; j < strides * (i + 1); j++) {
+                eye_stride.add(eyes.get(j+size/1024*workId));
             }
             Thread thread = new Thread(new WorldSeedGenerator(eye_stride, i, MCVersion.v1_16, workId));
             thread.start();
@@ -200,7 +201,7 @@ public class WorldSeedGenerator implements Runnable {
 
     public void onStructureSeedCompletion(long startTime, AtomicInteger progress) {
         int i = progress.incrementAndGet();
-        int total = eyes.size(); //Maybe don't hardcode the line count... xD
+        int total = eyes.size();
 
         double seconds = (double) (System.nanoTime() - startTime) / 1000000000.0D;
         double speed = (double) i / seconds;
