@@ -111,7 +111,8 @@ public class WorldSeedGenerator implements Runnable {
         JRand rand = new JRand(0L);
         AtomicInteger progress = new AtomicInteger();
         long startTime = System.nanoTime();
-        eyes.forEach(s -> {
+        for (String s : eyes) {
+            onStructureSeedCompletion(startTime, progress);
             System.out.println(s);
             String[] line = s.trim().split(Pattern.quote(" "));
             long structureSeed = Long.parseLong(line[0]);
@@ -124,7 +125,7 @@ public class WorldSeedGenerator implements Runnable {
             }
 
             Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
-            if (goodStarts.isEmpty()) return; //No start in the area lands a 12 eye. ¯\_(ツ)_/¯
+            if (goodStarts.isEmpty()) continue;
             int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
             int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
             int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
@@ -145,7 +146,7 @@ public class WorldSeedGenerator implements Runnable {
                 if (start == null || !goodStarts.contains(start)) continue;
 
                 BPos p = getPortalCenter(structureSeed, start, version);
-                String msg = String.format("%d:World seed %d /tp %d ~ %d\n",threadId, worldSeed, p.getX(), p.getZ());
+                String msg = String.format("%d:World seed %d /tp %d ~ %d\n", threadId, worldSeed, p.getX(), p.getZ());
                 System.out.print(msg);
                 try {
                     fileWriter.write(msg);
@@ -160,8 +161,7 @@ public class WorldSeedGenerator implements Runnable {
                 e.printStackTrace();
                 System.exit(-1);
             }
-            onStructureSeedCompletion(startTime, progress);
-        });
+        }
         fileWriter.close();
     }
 
