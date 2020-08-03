@@ -15,3 +15,6 @@ WorkId is a unique work id between 0 and 1023(inclusive both) that will give you
 At the end you will have a single file called finalOutput_XXXX.txt , send it inside an issue on that repo
 
 OPEN AN ISSUE WITH THE WORKID YOU CHOSE FIRST, then when done, upload the result there !
+
+Current working list: (yellow= in progress, green= done)
+https://docs.google.com/spreadsheets/d/1BrNoouVltMHRGHMzR2s7yO_ycjs9tB9MEw5i7yn0G-c
