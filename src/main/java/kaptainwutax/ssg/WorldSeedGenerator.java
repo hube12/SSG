@@ -85,6 +85,7 @@ public class WorldSeedGenerator implements Runnable {
                     }
                 });
                 fileWriter.flush();
+                readerOut.close();
                 File file1=new File("output_" + workId + "_" + i + ".txt");
                 file1.delete();
 
