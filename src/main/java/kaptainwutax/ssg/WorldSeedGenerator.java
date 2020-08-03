@@ -21,7 +21,7 @@ public class WorldSeedGenerator implements Runnable {
     private final int threadId;
     private final MCVersion version;
     private final int workId;
-
+    public final static int MAX_WORK_NB=1024;
     public WorldSeedGenerator(ArrayList<String> eyes, int threadId, MCVersion version, int workId) {
         this.eyes = eyes;
         this.threadId = threadId;
@@ -40,15 +40,15 @@ public class WorldSeedGenerator implements Runnable {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<String> eyes = reader.lines().collect(Collectors.toList());
         int size=eyes.size();
-        int len = size / 1024;
-        int strides = len / numberThreads;
+        int len = size / MAX_WORK_NB+1; // length of a workid (missing the potentially 1023)
+        int strides = len / numberThreads; // length of a stride in the length of a workid
         for (int id = 1; id < args.length; id++) {
             int workId = Integer.parseInt(args[id]);
             ArrayList<Thread> threads = new ArrayList<>();
             for (int i = 0; i < numberThreads; i++) {
                 ArrayList<String> eye_stride = new ArrayList<>();
                 for (int j = strides * i; j < strides * (i + 1); j++) {
-                    eye_stride.add(eyes.get(j+size/1024*workId));
+                    eye_stride.add(eyes.get(j+len*workId));
                 }
                 Thread thread = new Thread(new WorldSeedGenerator(eye_stride, i, MCVersion.v1_16, workId));
                 thread.start();
@@ -57,11 +57,25 @@ public class WorldSeedGenerator implements Runnable {
             for (Thread thread : threads) {
                 thread.join();
             }
+            // leftover
+            System.out.println("Missing "+(len-strides*numberThreads)+" seeds due to non integer, doing them rn on single thread");
+            int count=0;
+            ArrayList<String> eye_stride = new ArrayList<>();
+            for (int i = strides*numberThreads; i < len; i++) {
+                count++;
+                eye_stride.add(eyes.get(i+size/MAX_WORK_NB*workId));
+            }
+            if (count!=0){
+                System.out.println("There is "+count+" untapped seeds, we are covering them now!");
+                Thread thread = new Thread(new WorldSeedGenerator(eye_stride, numberThreads, MCVersion.v1_16, workId));
+                thread.start();
+                thread.join();
+            }
             File file = new File("finalOutput_" + workId + ".txt");
 
 
             FileWriter fileWriter = new FileWriter(file);
-            for (int i = 0; i < numberThreads; i++) {
+            for (int i = 0; i < (count==0?numberThreads:numberThreads+1); i++) {
                 BufferedReader readerOut = new BufferedReader(new FileReader("output_" + workId + "_" + i + ".txt"));
                 readerOut.lines().forEach(s -> {
                     try {
@@ -73,7 +87,7 @@ public class WorldSeedGenerator implements Runnable {
                 fileWriter.flush();
                 File file1=new File("output_" + workId + "_" + i + ".txt");
                 file1.delete();
-                
+
             }
             fileWriter.close();
         }

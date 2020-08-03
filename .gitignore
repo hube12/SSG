@@ -10,3 +10,4 @@ out/
 output*.txt
 
 RUN
+RUN.zip
