@@ -21,7 +21,7 @@ public class WorldSeedGenerator implements Runnable {
     private final int threadId;
     private final MCVersion version;
     private final int workId;
-    public final static int MAX_WORK_NB=1024;
+    public final static int MAX_WORK_NB=8;
     public WorldSeedGenerator(ArrayList<String> eyes, int threadId, MCVersion version, int workId) {
         this.eyes = eyes;
         this.threadId = threadId;
