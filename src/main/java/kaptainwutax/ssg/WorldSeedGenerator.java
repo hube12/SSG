@@ -112,7 +112,6 @@ public class WorldSeedGenerator implements Runnable {
         AtomicInteger progress = new AtomicInteger();
         long startTime = System.nanoTime();
         for (String s : eyes) {
-            onStructureSeedCompletion(startTime, progress);
             System.out.println(s);
             String[] line = s.trim().split(Pattern.quote(" "));
             long structureSeed = Long.parseLong(line[0]);
@@ -125,7 +124,10 @@ public class WorldSeedGenerator implements Runnable {
             }
 
             Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
-            if (goodStarts.isEmpty()) continue;
+            if (goodStarts.isEmpty()){
+                progress.incrementAndGet();
+                continue;
+            }
             int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
             int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
             int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
@@ -161,6 +163,7 @@ public class WorldSeedGenerator implements Runnable {
                 e.printStackTrace();
                 System.exit(-1);
             }
+            onStructureSeedCompletion(startTime, progress);
         }
         fileWriter.close();
     }
