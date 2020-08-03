@@ -2,6 +2,12 @@ SSG Finder
 
 Find all the seeds with pre-lit portal (12 eyes) close to spawn for speed running, this is for 1.16 speedrun!
 
+! Important !
+
+Current working list: (yellow= in progress, green= done)
+https://docs.google.com/spreadsheets/d/1BrNoouVltMHRGHMzR2s7yO_ycjs9tB9MEw5i7yn0G-c
+
+Please use range from 800 to 1024 in priority!
 
 Go in releases and download the jar https://github.com/hube12/SSG/releases
 
