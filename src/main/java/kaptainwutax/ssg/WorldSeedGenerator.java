@@ -65,12 +65,15 @@ public class WorldSeedGenerator implements Runnable {
                 BufferedReader readerOut = new BufferedReader(new FileReader("output_" + workId + "_" + i + ".txt"));
                 readerOut.lines().forEach(s -> {
                     try {
-                        fileWriter.write(s);
+                        fileWriter.write(s+"\n");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
                 fileWriter.flush();
+                File file1=new File("output_" + workId + "_" + i + ".txt");
+                file1.delete();
+                
             }
             fileWriter.close();
         }
