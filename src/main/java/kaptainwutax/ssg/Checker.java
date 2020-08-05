@@ -27,7 +27,7 @@ public class Checker {
         }
         HashMap<Long,String> track=new HashMap<>(input);
 
-        InputStream in2 = WorldSeedGenerator.class.getResourceAsStream("final.txt");
+        InputStream in2 = WorldSeedGenerator.class.getResourceAsStream("output.txt");
         BufferedReader reader2 = new BufferedReader(new InputStreamReader(in2));
         HashMap<Long,String>full=new HashMap<>();
         for (Object line : reader2.lines().toArray()) {
@@ -47,7 +47,7 @@ public class Checker {
         System.out.println(full.size());
         System.out.println(input.size());
         long startTime = System.nanoTime();
-        File out = new File("output.txt");
+        File out = new File("output2.txt");
         if (!out.exists()) {
 
             if (!out.createNewFile()) {
@@ -65,12 +65,12 @@ public class Checker {
 
 
             }else{
-               // System.out.println("WARNING the worldseed was not even a valid struct seed "+worldseed);
+               System.out.println("WARNING the worldseed was not even a valid struct seed "+worldseed);
             }
             count++;
             if (count%10000==0){
-                System.out.println(count/11000_000.0*100);
-                printTime(startTime);
+               // System.out.println(count/11000_000.0*100);
+               // printTime(startTime);
             }
         }
         fileOut.flush();
