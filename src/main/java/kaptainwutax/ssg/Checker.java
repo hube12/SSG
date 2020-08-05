@@ -1,25 +1,14 @@
 package kaptainwutax.ssg;
 
-import kaptainwutax.featureutils.structure.Stronghold;
-import kaptainwutax.featureutils.structure.generator.StrongholdGenerator;
-import kaptainwutax.featureutils.structure.generator.piece.stronghold.PortalRoom;
-import kaptainwutax.seedutils.lcg.LCG;
-import kaptainwutax.seedutils.lcg.rand.JRand;
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.CPos;
-import kaptainwutax.seedutils.util.BlockBox;
-
+import javax.sound.sampled.Line;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Checker {
-    private static final LCG RING_SKIP = LCG.JAVA.combine(4);
 
     public static void main(String[] args) throws IOException {
-        MCVersion version = MCVersion.v1_16;
         File file = new File("nonpresent.txt");
         if (!file.exists()) {
 
@@ -29,33 +18,68 @@ public class Checker {
             }
         }
         System.out.println(file.getAbsolutePath());
-        FileWriter fileWriter = new FileWriter(file);
-        long startTime = System.nanoTime();
-        InputStream in = WorldSeedGenerator.class.getResourceAsStream("/validation.txt");
+        InputStream in = WorldSeedGenerator.class.getResourceAsStream("validation.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        Set<Long> eyes = reader.lines().map(el->{
-            String[] line=el.trim().split(Pattern.quote(" "));
-            return Long.parseLong(line[0]); // 258366710815118 77 -145 68 -153
-        }).collect(Collectors.toSet());
-        Set<Long> track=new HashSet<>(eyes);
-        InputStream in2 = WorldSeedGenerator.class.getResourceAsStream("/final.txt");
-        BufferedReader reader2 = new BufferedReader(new InputStreamReader(in));
-        List<Long> full = reader.lines().map(el->{
-            String[] line=el.trim().split(Pattern.quote(" "));
-            return Long.parseLong(line[2]); // 3:World seed 60933461081917201 /tp 1751 ~ -1768
-        }).collect(Collectors.toList());
-        for (Long worldseed : full) {
-            long struct=worldseed&0xFFFF_FFFF_FFFFL;
-            if (eyes.contains(struct)){
-                track.remove(struct);
+        HashMap<Long,String>input=new HashMap<>();
+        for (Object line : reader.lines().toArray()) {
+            String[] lines=((String)line).trim().split(Pattern.quote(" "));
+            input.put(Long.parseLong(lines[0]),((String)line));
+        }
+        HashMap<Long,String> track=new HashMap<>(input);
+
+        InputStream in2 = WorldSeedGenerator.class.getResourceAsStream("final.txt");
+        BufferedReader reader2 = new BufferedReader(new InputStreamReader(in2));
+        HashMap<Long,String>full=new HashMap<>();
+        for (Object line : reader2.lines().toArray()) {
+            String[] lines=((String)line).trim().split(Pattern.quote(" "));
+            Long numer=Long.parseLong(lines[2]);
+            if (full.containsKey(numer)){
+                //System.out.println("ALREADY CONTAINED "+ line);
+                if (!full.get(numer).trim().split(Pattern.quote(" "))[6].equals(lines[6]) || !full.get(numer).trim().split(Pattern.quote(" "))[4].equals(lines[4])){
+                    System.out.println("ERROR !! "+line+ "\n  "+full.get(numer));
+                }
             }else{
-                System.out.println("WARNING the worldseed was not even a valid struct seed "+worldseed);
+                full.put(numer,((String)line));
             }
         }
-        for (Long aLong : track) {
-            System.out.println("MISSING "+aLong);
-        }
 
+        long count=0;
+        System.out.println(full.size());
+        System.out.println(input.size());
+        long startTime = System.nanoTime();
+        File out = new File("output.txt");
+        if (!out.exists()) {
+
+            if (!out.createNewFile()) {
+                System.out.println("File was not created");
+                System.exit(-1);
+            }
+        }
+        System.out.println(out.getAbsolutePath());
+        FileWriter fileOut = new FileWriter(out);
+        for (Long worldseed : full.keySet()) {
+            long struct=worldseed&0xFFFF_FFFF_FFFFL;
+            if (input.containsKey(struct)){
+                track.remove(struct);
+                fileOut.write(full.get(worldseed)+"\n");
+
+
+            }else{
+               // System.out.println("WARNING the worldseed was not even a valid struct seed "+worldseed);
+            }
+            count++;
+            if (count%10000==0){
+                System.out.println(count/11000_000.0*100);
+                printTime(startTime);
+            }
+        }
+        fileOut.flush();
+        fileOut.close();
+        FileWriter fileWriter = new FileWriter(file);
+        for (Long aLong : track.keySet()) {
+           // System.out.println("MISSING "+aLong);
+            fileWriter.write(aLong+"\n");
+        }
     }
 
     private static void printTime(long start) {

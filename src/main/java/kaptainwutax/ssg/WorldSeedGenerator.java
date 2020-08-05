@@ -36,7 +36,7 @@ public class WorldSeedGenerator implements Runnable {
         }
         int numberThreads = Integer.parseInt(args[0]);
 
-        InputStream in = WorldSeedGenerator.class.getResourceAsStream("/input12eyes.txt");
+        InputStream in = WorldSeedGenerator.class.getResourceAsStream("input12eyes.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<String> eyes = reader.lines().collect(Collectors.toList());
         int size=eyes.size();

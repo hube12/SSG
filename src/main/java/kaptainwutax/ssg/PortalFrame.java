@@ -8,14 +8,15 @@ import kaptainwutax.seedutils.util.math.Vec3i;
 public class PortalFrame {
 
 	public static BlockBox getPortalBB(PortalRoom room) {
-		Vec3i mins = applyVecTransform(room, new Vec3i(3,0,8));
-		Vec3i maxes = applyVecTransform(room, new Vec3i(7,0,12));
+
+		Vec3i mins = applyVecTransform(room, new Vec3i(4,0,9));
+		Vec3i maxes = applyVecTransform(room, new Vec3i(6,0,11));
 		return new BlockBox(mins, maxes);
 	}
 
 	public static BlockBox getPortalFrameBB(PortalRoom room) {
-		Vec3i mins = applyVecTransform(room, new Vec3i(4,0,9));
-		Vec3i maxes = applyVecTransform(room, new Vec3i(6,0,11));
+		Vec3i mins = applyVecTransform(room, new Vec3i(3,0,8));
+		Vec3i maxes = applyVecTransform(room, new Vec3i(7,0,12));
 		return new BlockBox(mins, maxes);
 	}
 
