@@ -21,7 +21,7 @@ public class WorldSeedGenerator implements Runnable {
     private final int threadId;
     private final MCVersion version;
     private final int workId;
-    public final static int MAX_WORK_NB=8;
+    public final static int MAX_WORK_NB=1;
     public WorldSeedGenerator(ArrayList<String> eyes, int threadId, MCVersion version, int workId) {
         this.eyes = eyes;
         this.threadId = threadId;
@@ -40,7 +40,7 @@ public class WorldSeedGenerator implements Runnable {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         List<String> eyes = reader.lines().collect(Collectors.toList());
         int size=eyes.size();
-        int len = size / MAX_WORK_NB+1; // length of a workid (missing the potentially 1023)
+        int len = size; // length of a workid (missing the potentially 1023)
         int strides = len / numberThreads; // length of a stride in the length of a workid
         for (int id = 1; id < args.length; id++) {
             int workId = Integer.parseInt(args[id]);
@@ -110,10 +110,10 @@ public class WorldSeedGenerator implements Runnable {
         System.out.println(file.getAbsolutePath());
         FileWriter fileWriter = new FileWriter(file);
         JRand rand = new JRand(0L);
-        AtomicInteger progress = new AtomicInteger();
+        long progress=0;
         long startTime = System.nanoTime();
         for (String s : eyes) {
-            System.out.println(s);
+            //System.out.println(s);
             String[] line = s.trim().split(Pattern.quote(" "));
             long structureSeed = Long.parseLong(line[0]);
             CPos _12eyeChunk = new CPos(Integer.parseInt(line[1]), Integer.parseInt(line[2]));
@@ -123,50 +123,29 @@ public class WorldSeedGenerator implements Runnable {
             if (DEBUG) {
                 System.out.println("Structure seed " + structureSeed);
             }
-
+        progress++;
             Collection<CPos> goodStarts = getGoodStarts(structureSeed, _12eyeChunk, startChunk, version);
             if (goodStarts.isEmpty()){
-                progress.incrementAndGet();
+
                 continue;
             }
-            int lastZero = getLastZero(rand, rngSeed); //The last value of n where nextInt(n) == 0.
-            int lastX = goodStarts.stream().mapToInt(CPos::getX).max().getAsInt();
-            int lastZ = goodStarts.stream().mapToInt(CPos::getZ).max().getAsInt();
-
-            if (DEBUG) {
-                System.out.println("Good one! " + goodStarts);
-                System.out.println("Last zero " + lastZero + " / " + 3249);
-            }
-
-            for (long upperBits = 0; upperBits < 1L << 16; upperBits++) {
-                long worldSeed = (upperBits << 48) | structureSeed;
-                BiomeChecker source = new BiomeChecker(version, worldSeed);
-                rand.setSeed(rngSeed, false);
-
-                CPos start = source.getStrongholdStart(
-                        (startChunk.getX() << 4) + 8, (startChunk.getZ() << 4) + 8,
-                        Stronghold.VALID_BIOMES, rand, lastZero, lastX, lastZ);
-                if (start == null || !goodStarts.contains(start)) continue;
-
-                BPos p = getPortalCenter(structureSeed, start, version);
-                String msg = String.format("%d:World seed %d /tp %d ~ %d\n", threadId, worldSeed, p.getX(), p.getZ());
-                System.out.print(msg);
-                try {
-                    fileWriter.write(msg);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
-            }
             try {
-                fileWriter.flush();
+                fileWriter.write(s+"\n");
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(-1);
             }
-            onStructureSeedCompletion(startTime, progress);
+            if ((progress%1000)==0){
+                fileWriter.flush();
+                printTime(startTime);
+            }
+
         }
+        fileWriter.flush();
         fileWriter.close();
+    }
+    private static void printTime(long start) {
+        System.out.println((System.nanoTime() - start) / 1.0e9 + "s");
     }
 
     private static BPos getPortalCenter(long structureSeed, CPos start, MCVersion version) {
