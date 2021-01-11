@@ -1,5 +1,7 @@
 SSG Finder
 
+Finished running since last summer!  Find here: https://github.com/hube12/SSGOutput/releases
+
 Find all the seeds with pre-lit portal (12 eyes) close to spawn for speed running, this is for 1.16 speedrun!
 
 ! Important !
