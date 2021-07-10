@@ -1,8 +1,9 @@
 package kaptainwutax.ssg;
 
-import kaptainwutax.seedutils.lcg.rand.JRand;
-import kaptainwutax.seedutils.mc.pos.CPos;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
+
+import kaptainwutax.mcutils.util.math.DistanceMetric;
+import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.seedutils.rand.JRand;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

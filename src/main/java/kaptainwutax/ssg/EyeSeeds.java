@@ -1,10 +1,9 @@
 package kaptainwutax.ssg;
 
+import com.seedfinding.latticg.reversal.DynamicProgram;
+import com.seedfinding.latticg.reversal.calltype.java.JavaCalls;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.seedutils.lcg.LCG;
-import kaptainwutax.seedutils.lcg.rand.JRand;
-import kaptainwutax.seedutils.mc.MCVersion;
-import randomreverser.call.java.NextFloat;
-import randomreverser.device.Lattice;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,31 +11,29 @@ import java.util.stream.Stream;
 
 public class EyeSeeds {
 
-	private static Map<Integer, Lattice<JRand>> LATTICES = new HashMap<>();
-	private static LCG BACK = LCG.JAVA.combine(-760);
+	private static final Map<Integer, DynamicProgram> LATTICES = new HashMap<>();
+	private static final LCG BACK = LCG.JAVA.combine(-760);
 
-	public static Lattice<JRand> getLattice(int eyeCount) {
-		Lattice<JRand> lattice = LATTICES.get(eyeCount);
-		if(lattice != null)return lattice;
+	public static DynamicProgram getLattice(int eyeCount) {
+		DynamicProgram program = LATTICES.get(eyeCount);
+		if (program != null) return program;
+		program = DynamicProgram.create(com.seedfinding.latticg.util.LCG.JAVA);
 
-		lattice = new Lattice<>(LCG.JAVA);
-
-		for(int i = 0; i < eyeCount; i++) {
-			lattice.addCall(NextFloat.inRange(0.9F, 1.0F));
+		for (int i = 0; i < eyeCount; i++) {
+			program.add(JavaCalls.nextFloat().betweenII(0.9F, 1.0F));
 		}
+		program.setVerbose(false);
 
-		lattice.build();
-
-		LATTICES.put(eyeCount, lattice);
-		return lattice;
+		LATTICES.put(eyeCount, program);
+		return program;
 	}
 
 	public static Stream<Long> getEyeSeeds(int eyeCount) {
-		return getLattice(eyeCount).streamSolutions();
+		return getLattice(eyeCount).reverse().boxed();
 	}
 
 	public static Stream<Long> getPopulationSeeds(int eyeCount, MCVersion version) {
-		return getLattice(eyeCount).streamSolutions().map(eyeSeed -> toPopulationSeed(eyeSeed, version));
+		return getLattice(eyeCount).reverse().boxed().map(eyeSeed -> toPopulationSeed(eyeSeed, version));
 	}
 
 	public static long toPopulationSeed(long eyeSeed, MCVersion version) {

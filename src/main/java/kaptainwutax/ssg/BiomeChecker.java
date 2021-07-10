@@ -1,10 +1,10 @@
 package kaptainwutax.ssg;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
 import kaptainwutax.biomeutils.source.OverworldBiomeSource;
-import kaptainwutax.seedutils.lcg.rand.JRand;
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.seedutils.rand.JRand;
 
 import java.util.Collection;
 

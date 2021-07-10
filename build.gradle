@@ -15,28 +15,22 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+    maven { url "https://maven.latticg.com/"}
 }
 
 dependencies {
-    implementation('com.github.KaptainWutax:SeedUtils:-SNAPSHOT'){
-        transitive=false;
-    }
+    implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
+    implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:131e865ad577d1e572cd4878b569b65c166f8e30') { transitive = false }
+    implementation('com.github.KaptainWutax:NoiseUtils:5c1373c9c56e280163a49a34d18290971f6e16ea') { transitive = false }
 
-    implementation('com.github.KaptainWutax:LattiCG:1339155a2eff535c9dc89736f28c933689023f14'){
-        transitive=false;
-    }
+    implementation('com.github.KaptainWutax:BiomeUtils:280f8b165c4c6a048f6c7cf4b0a6cc5d60ec5499') {transitive = false}
+    implementation('com.github.KaptainWutax:TerrainUtils:a61decfc9189958bc76273cf0d97bff17a2267d9') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:180b860e10633026d96b87f114746534e01c95c8') { transitive = false }
 
-    implementation('com.github.KaptainWutax:BiomeUtils:94098e9d2bd8bc4f1134d4b79dfa82d70ef90979'){
-        transitive=false;
-    }
+    implementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') {transitive = false}
+    implementation 'com.seedfinding:latticg:1.05@jar'
 
-    implementation('com.github.KaptainWutax:FeatureUtils:67098281211343ed9a0c5216e021c63db54f3ba2'){
-        transitive=false;
-    }
-
-    implementation('com.github.mjtb49:ChunkRandomReversal:e66e286f4bcc5f652ba53f61482fc7dca8ef7d49'){
-        transitive=false;
-    }
 }
 
 application {

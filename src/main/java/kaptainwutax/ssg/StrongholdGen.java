@@ -1,7 +1,7 @@
 package kaptainwutax.ssg;
 
-import kaptainwutax.seedutils.lcg.rand.JRand;
-import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.seedutils.rand.JRand;
 
 import java.util.*;
 

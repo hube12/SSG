@@ -1,7 +1,7 @@
 package kaptainwutax.ssg;
 
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.version.MCVersion;
 import mjtb49.hashreversals.ChunkRandomReverser;
 
 import java.io.FileWriter;
@@ -41,7 +41,7 @@ public class StructureSeedGenerator {
 
 		for(CPos start: starts) {
 			for(long populationSeed: populationSeeds) {
-				for(long structureSeed: REVERSER.reversePopulationSeed(populationSeed,
+				for(long structureSeed: ChunkRandomReverser.reversePopulationSeed(populationSeed,
 						start.getX() << 4, start.getZ() << 4, version)) {
 					writer.write(structureSeed + " " + start.getX() + " " + start.getZ() + "\n");
 					count++;

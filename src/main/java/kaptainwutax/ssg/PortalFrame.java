@@ -2,8 +2,8 @@ package kaptainwutax.ssg;
 
 import kaptainwutax.featureutils.structure.generator.piece.StructurePiece;
 import kaptainwutax.featureutils.structure.generator.piece.stronghold.PortalRoom;
-import kaptainwutax.seedutils.util.BlockBox;
-import kaptainwutax.seedutils.util.math.Vec3i;
+import kaptainwutax.mcutils.util.block.BlockBox;
+import kaptainwutax.mcutils.util.math.Vec3i;
 
 public class PortalFrame {
 
